@@ -1,5 +1,6 @@
+import os
 import duckdb
-from .config import config
+from .config import config, DATABASE_PATH
 import pandas as pd
 
 
@@ -79,6 +80,11 @@ def init_database():
     avec la fonction convert_to_utf8().
     Elle crée dans un second temps les tables MAJNUM et R1R2. 
     """
+
+    # Vérifier que la db existe déjà 
+    if os.path.exists(DATABASE_PATH):
+        print("La BDD existe déjà")
+        return
     try:
         # Récupérer les données et convertir en utf8
         convert_to_utf8(config["data"]["url_num"], "MAJNUM_utf8.csv")
@@ -87,9 +93,8 @@ def init_database():
         # Transformer EZABPQM en String en rajoutant un 0 devant
         preprocess_data("MAJNUM_utf8.csv")
         
-
         # Charger les données dans duckdb
-        con = duckdb.connect(config["database"]["path"])
+        con = duckdb.connect(DATABASE_PATH)
         df_num = pd.read_csv(
             "MAJNUM_utf8.csv", sep=config["data"]["separator"], encoding="utf-8", dtype={'EZABPQM': str}
         )
@@ -123,29 +128,56 @@ def init_database():
         raise
 
 
-def merged_data():
-    con = duckdb.connect(config['database']['path'])
+def create_merged_data_table() -> pd.DataFrame :
+    con = duckdb.connect(DATABASE_PATH)
+    # Vérifier que la table n'existe pas déjà
+    table_exists = con.execute ("SELECT count(*) FROM information_schema.tables WHERE table_name = 'SEARCH_TABLE' ;").fetchone()[0]
+    if table_exists :
+        row_count = con.execute("SELECT COUNT(*) FROM SEARCH_TABLE;").fetchone()[0]
+        con.close()
+        print("La table SEARCH_TABLE contient {row_count} lignes")
+        return
+    
+    df_num = con.execute("SELECT EZABPQM AS EZABPQM, Mnémo FROM MAJNUM ;").fetchdf()
+    df_r1r2 = con.execute('SELECT "Code Attributaire", Attributaire FROM R1R2 ;').fetchdf()
+    q = """
+        SELECT *
+        FROM df_num
+        INNER JOIN df_r1r2
+        ON df_num.Mnémo = df_r1r2."Code Attributaire";
+        """
+    merged_df = con.execute(q).fetchdf()
+    merged_df = merged_df[['EZABPQM','Code Attributaire', 'Attributaire']]
+    
+    # Insérer la nouvelle table dans la bdd 
+    con.execute("""
+        CREATE TABLE IF NOT EXISTS SEARCH_TABLE(
+                EZABPQM VARCHAR,
+                "Code Attributaire" VARCHAR,
+                Attributaire VARCHAR)
+                """)
+    con.execute("INSERT INTO SEARCH_TABLE SELECT * from merged_df;")
+    row_count = con.execute("SELECT COUNT(*) FROM SEARCH_TABLE;").fetchone()[0]
+    con.close()
+    print(f"La table SEARCH_TABLE a été crée avec succès et contient {row_count} lignes")
 
-    df_num = con.execute("SELECT EZABPQM::VARCHAR AS EZABPQM, Mnémo FROM MAJNUM ;").fetchdf()
-    df_r1r2 = con.execute("SELECT 'Code attributaire', Attributaire FROM R1R2 ;").fetchdf()
-    print("Les types pour df_num :")
-    print(df_num.dtypes)
-    print("\n les types pour df_r1r2 :")
-    print(df_r1r2.dtypes)
-    print(df_num.head())
 
+def get_search_data():
+    con = duckdb.connect(DATABASE_PATH)
+    result = '' 
+    return result
 
-
+    
 
 def get_majnum():
-    con = duckdb.connect(config["database"]["path"])
+    con = duckdb.connect(DATABASE_PATH)
     result = con.execute("SELECT * from MAJNUM").fetchdf()
     con.close()
     return result
 
 
 def get_r1r2():
-    con = duckdb.connect(config["database"]["path"])
+    con = duckdb.connect(DATABASE_PATH)
     result = con.execute("SELECT * from r1r2").fetchdf()
     con.close()
     return result

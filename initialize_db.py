@@ -1,6 +1,6 @@
-from app.models import init_database, merged_data
+from app.models import init_database, create_merged_data_table
 
 if __name__ == "__main__":
     init_database()
-    merged_data()
+    create_merged_data_table()
     
