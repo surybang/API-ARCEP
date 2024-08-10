@@ -1,0 +1,15 @@
+# config.yaml
+database:
+  path: "database.db"
+
+api:
+  host: "127.0.0.1"
+  port: 8000
+
+streamlit:
+  port: 8501
+
+data:
+  url_num: "https://extranet.arcep.fr/uploads/MAJNUM.csv"
+  url_r1r2: "https://extraner.arcep.fr/uploads/MAJR1R2.csv"
+  separator: ","
