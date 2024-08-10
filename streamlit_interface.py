@@ -1,2 +1,2 @@
-# Streamlit interface 
+# Streamlit interface
 import streamlit as st

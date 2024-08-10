@@ -3,3 +3,5 @@ venv/
 test.py
 MAJNUM_utf8.csv
 MAJR1R2_utf8.csv
+merged_df.csv
+notebooks.ipynb
