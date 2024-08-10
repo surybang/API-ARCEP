@@ -11,5 +11,6 @@ streamlit:
 
 data:
   url_num: "https://extranet.arcep.fr/uploads/MAJNUM.csv"
-  url_r1r2: "https://extraner.arcep.fr/uploads/MAJR1R2.csv"
-  separator: ","
+  url_r1r2: "https://extranet.arcep.fr/uploads/MAJR1R2.csv"
+  separator: ";"
+  encoding : "ISO-8859-1"
