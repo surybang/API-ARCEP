@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from controllers import router
-from config import HOST_PATH, PORT_PATH
+from .controllers import router
+from .config import HOST_PATH, PORT_PATH
 
 app = FastAPI()
 

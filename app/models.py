@@ -1,6 +1,6 @@
 import os
 import duckdb
-from config import config, DATABASE_PATH
+from .config import config, DATABASE_PATH
 import pandas as pd
 
 
