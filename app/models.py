@@ -210,16 +210,40 @@ def get_search_data(input_user: str) -> dict:
 # TODO : Faire la logique pour récupérer les infos du code attributaire pr que ça soit plus simple à récupérer dans un dataframe
 
 
-def get_majnum_data():
+def get_majnum_data() -> dict:
     con = duckdb.connect(DATABASE_PATH)
     result = con.execute("SELECT * from MAJNUM").fetchdf()
     con.close()
     return result.to_dict(orient="records")
 
 
-def get_r1r2_data():
+def get_r1r2_data() -> dict:
     con = duckdb.connect(DATABASE_PATH)
     result = con.execute("SELECT * from r1r2").fetchdf()
     con.close()
     return result.to_dict(orient="records")
+
+def get_nom_attributaire() -> dict:
+    con = duckdb.connect(DATABASE_PATH)
+    result = con.execute("""
+                         SELECT DISTINCT "Code attributaire", Attributaire from SEARCH_TABLE
+                         """).fetchdf()
+    con.close()
+    results = result.to_dict(orient="records")
+    return {
+        "data": results,
+    }
+
+def get_attributaire(input_user: str) -> dict:
+    con = duckdb.connect(DATABASE_PATH)
+    q = """
+        SELECT * FROM SEARCH_TABLE WHERE UPPER("Code Attributaire") = UPPER(?)
+        """
+    result = con.execute(q, (input_user,)).fetchdf()
+    con.close()
+    results = result.to_dict(orient="records")
+    return {
+            "status": "success",
+            "data": results,
+        }
 

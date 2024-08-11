@@ -31,3 +31,34 @@ if st.button("Rechercher"):
             st.error(f"Erreur de connexion à l'API : {str(e)}")
     else:
         st.warning("Veuillez entrer un numéro de téléphone.")
+
+
+input_user2 = st.text_input("Entrez le code d'un opérateur selon les noms ci-dessous:")
+
+
+if input_user2:
+    try:
+        response = requests.get(
+            f"http://{HOST_PATH}:{PORT_PATH}/attributaire/{input_user2}"
+        )
+        response_data = response.json()
+        if response.status_code == 200:
+            if response_data["status"] == "success":
+                df4 = pd.DataFrame(response_data['data'])
+                st.dataframe(df4)
+            else:
+                st.error(f"Erreur {response.json()['detail']}")
+    except requests.exceptions.RequestException as e:
+        st.error(f"Erreur de connexion à l'API :{str(e)}")
+else:
+    try:
+        response = requests.get(
+            f"http://{HOST_PATH}:{PORT_PATH}/nom_attributaire"
+            )
+        response_data = response.json()
+        df3 = pd.DataFrame(response_data["data"])
+        st.dataframe(df3)
+    except requests.exceptions.RequestException as e:
+        st.error(f"Erreur de connexion à l'API : {str(e)}")
+    st.write("Veuillez saisir un identifiant opérateur avec la liste")
+
