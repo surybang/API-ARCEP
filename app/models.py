@@ -173,7 +173,7 @@ def create_merged_data_table() -> pd.DataFrame:
     )
 
 
-def get_search_data(input_user: str) -> str:
+def get_search_data(input_user: str) -> dict:
     con = duckdb.connect(DATABASE_PATH)
 
     input_length = len(input_user)
@@ -184,18 +184,27 @@ def get_search_data(input_user: str) -> str:
     WHERE LEFT(EZABPQM,{input_length}) = ? ; 
     """
     result = con.execute(q, (input_user,)).fetchdf()
-    print(result.head())
-    print(len(result))
+    # print(result.head())
+    # print(len(result))
     con.close()
     if len(result) == 0:
-        return "Aucun identifiant trouvé."
+        return {
+            "status": "error",
+            "message": "Aucun identifiant trouvé",
+        }
     elif len(result) == 1:
-        return f"Identifiant opérateur: {result.iloc[0]['EZABPQM']}, \
-                 Code Attributaire : {result.iloc[0]['Code Attributaire']}, \
-                 Attributaire : {result.iloc[0]['Attributaire']}"
+        results = result.to_dict(orient="records")
+        return {
+            "status": "success",
+            "data": results,
+        }
     else:
-        return f"Plusieurs identifiants correspondent à {input_user}. \
-                \n Veuillez saisir un identifiant plus long"
+        results = result.to_dict(orient="records")
+        return {
+            "status": "warning",
+            "message": "Plusieurs résultats correspondent à la recherche, vous pouvez saisir un identifiant plus précis si vous le souhaitez",
+            "data": results,
+        }
 
 
 # TODO : Faire la logique pour récupérer les infos du code attributaire pr que ça soit plus simple à récupérer dans un dataframe
@@ -213,3 +222,4 @@ def get_r1r2_data():
     result = con.execute("SELECT * from r1r2").fetchdf()
     con.close()
     return result.to_dict(orient="records")
+

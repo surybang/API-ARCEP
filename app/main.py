@@ -1,10 +1,11 @@
 from fastapi import FastAPI
 from controllers import router
-from config import config
+from config import HOST_PATH, PORT_PATH
 
 app = FastAPI()
 
 app.include_router(router)
+
 
 @app.get("/")
 def read_root():
@@ -14,4 +15,4 @@ def read_root():
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app, host=config["api"]["host"], port=config["api"]["port"])
+    uvicorn.run(app, host=HOST_PATH, port=PORT_PATH)
