@@ -1,6 +1,8 @@
 # 📞 Recherche Opérateur Téléphonique
 
-Bienvenue dans le projet **Recherche Opérateur Téléphonique** ! Ce projet permet de rechercher des informations sur les opérateurs téléphoniques en France, en se basant sur les données fournies par l'ARCEP. Nous avons mis en place une API robuste avec FastAPI, accompagnée d'une interface utilisateur développée avec Streamlit.
+Bienvenue dans le projet **Recherche Opérateur Téléphonique** ! 
+
+Ce projet permet de rechercher des informations sur les opérateurs téléphoniques en France, en se basant sur les données fournies par l'ARCEP. Nous avons mis en place une API  avec FastAPI, accompagnée d'une interface utilisateur développée avec Streamlit.
 
 ## 📝 Description
 
