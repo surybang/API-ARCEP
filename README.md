@@ -45,8 +45,8 @@ Streamlit est utilisé pour créer une interface simple et efficace permettant a
 1. **Clonez le dépôt** :
 
    ```bash
-   git clone https://github.com/votre-utilisateur/recherche-operateur-telephonique.git
-   cd recherche-operateur-telephonique
+   git clone https://github.com/votre-utilisateur/Search-Operator.git
+   cd Search-Operator
 
 2. ** Créez un environnement virtuel** :
 
