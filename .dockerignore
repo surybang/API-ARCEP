@@ -8,3 +8,4 @@ merged_df.csv
 *.egg-info/
 .eggs/
 *.db
+.pytest_cache
