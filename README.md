@@ -90,5 +90,8 @@ Streamlit est utilisé pour créer une interface simple et efficace permettant a
      http://127.0.0.1:8000/docs
      ```
 
-
+### Améliorations possibles 
+   - Pydantic
+   - Gestion des erreurs
+   
 
