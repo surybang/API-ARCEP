@@ -1,6 +1,12 @@
 # controllers.py
 from fastapi import APIRouter, HTTPException
-from .models import get_search_data, get_r1r2_data, get_majnum_data, get_attributaire, get_nom_attributaire
+from .models import (
+    get_search_data,
+    get_r1r2_data,
+    get_majnum_data,
+    get_attributaire,
+    get_nom_attributaire,
+)
 
 router = APIRouter()
 
@@ -33,22 +39,20 @@ def search_identifiant(input_user: str) -> dict:
             }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
+
+
 @router.get("/nom_attributaire")
 def get_attributaire_data() -> dict:
     try:
         response = get_nom_attributaire()
-        return {
-            "data": response["data"]
-            }
+        return {"data": response["data"]}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-        
 
 
 @router.get("/attributaire/{input_user}")
 def search_attributaire(input_user: str) -> dict:
-    try :
+    try:
         response = get_attributaire(input_user)
         if response["status"] == "success":
             return {
