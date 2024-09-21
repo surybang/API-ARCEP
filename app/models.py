@@ -8,14 +8,14 @@ import pandas as pd
 def get_search_data(input_user: str) -> dict:
     con = duckdb.connect(DATABASE_PATH)
     try:
-        input_length = len(input_user)
+        input_user_short = input_user[:5] + '%'
 
         q = f"""
         SELECT EZABPQM, "Code Attributaire", Attributaire
         FROM SEARCH_TABLE
-        WHERE LEFT(EZABPQM, ?) = ? ; 
+        WHERE EZABPQM LIKE ? ; 
         """
-        result = con.execute(q, (input_length, input_user)).fetchdf()
+        result = con.execute(q, (input_user_short, )).fetchdf()
         # print(result.head())
         # print(len(result))
 

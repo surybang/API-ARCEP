@@ -11,7 +11,7 @@ st.title("Rechercher un opérateur téléphonique")
 
 tab1, tab2 = st.tabs(["Recherche par numéro", "Recherche par identifiant"])
 with tab1:
-    input_user = st.text_input("Entrez un numéro de téléphone portable:")
+    input_user = st.text_input("Entrez les 3 à 5 premiers chiffres d'un numéro de téléphone portable :")
 
     if st.button("Rechercher"):
         if input_user:
