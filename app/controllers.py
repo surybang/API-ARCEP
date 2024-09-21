@@ -37,6 +37,11 @@ def search_identifiant(input_user: str) -> dict:
                 "status": response["status"],
                 "data": response["data"],
             }
+    # Je laisse passer l'HTTPException 404 et je l'affiche ici 
+    # sinon elle est contenue dans l'Exception suivante et renvoie 500
+    except HTTPException as e : 
+        raise e
+    
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
@@ -61,5 +66,8 @@ def search_attributaire(input_user: str) -> dict:
             }
         else:
             raise HTTPException(status_code=404)
+    except HTTPException as e :
+        raise e
+    
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
