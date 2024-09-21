@@ -90,8 +90,11 @@ Streamlit est utilisé pour créer une interface simple et efficace permettant a
      http://127.0.0.1:8000/docs
      ```
 
-### Améliorations possibles 
-   - Pydantic
-   - Gestion des erreurs
+## ⚙ Améliorations possibles 
+   1. **Pydantic** : 
+   - Une future amélioration pourrait consister à utiliser *Pydantic* pour gérer les configurations en remplaçant le simple chargement de config.yaml par des classes Pydantic robustes. Cela permettrait d'appliquer des validations automatiques sur les valeurs de configuration (types de données, valeurs par défaut, etc.).
+   
+   2. **Gestion des erreurs**
+   - Actuellement, le projet implémente une gestion basique des erreurs, mais il serait possible d'ajouter une gestion d'erreurs plus fine, en capturant des exceptions spécifiques et en implémentant des stratégies de retry pour les téléchargements ou les erreurs de base de données.
    
 
