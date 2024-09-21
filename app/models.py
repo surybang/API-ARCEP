@@ -44,8 +44,8 @@ def preprocess_data(input_file):
             # Convertir la colonne en string + ajouter un 0 à chaque obs. avec un lambda
             df["EZABPQM"] = df["EZABPQM"].astype(str).apply(lambda x: "0" + x)
             # print(df.head())
-            print("Types de colonnes après conversion :")
-            print(df.dtypes)
+            # print("Types de colonnes après conversion :")
+            # print(df.dtypes)
 
             df.to_csv(input_file, sep=";", encoding="utf-8", index=False)
             print(f"Les données dans {input_file} ont été prétraitées avec succès")
@@ -136,6 +136,7 @@ def create_merged_data_table() -> pd.DataFrame:
     table_exists = con.execute(
         "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'SEARCH_TABLE' ;"
     ).fetchone()[0]
+
     if table_exists:
         row_count = con.execute("SELECT COUNT(*) FROM SEARCH_TABLE;").fetchone()[0]
         con.close()
@@ -176,40 +177,38 @@ def create_merged_data_table() -> pd.DataFrame:
 
 def get_search_data(input_user: str) -> dict:
     con = duckdb.connect(DATABASE_PATH)
+    try:
+        input_length = len(input_user)
 
-    input_length = len(input_user)
-
-    q = f"""
-    SELECT EZABPQM, "Code Attributaire", Attributaire
-    FROM SEARCH_TABLE
-    WHERE LEFT(EZABPQM,{input_length}) = ? ; 
-    """
-    result = con.execute(q, (input_user,)).fetchdf()
-    # print(result.head())
-    # print(len(result))
-    con.close()
-    if len(result) == 0:
-        return {
-            "status": "error",
-            "message": "Aucun identifiant trouvé",
-        }
-    elif len(result) == 1:
-        results = result.to_dict(orient="records")
-        return {
-            "status": "success",
-            "data": results,
-        }
-    else:
-        results = result.to_dict(orient="records")
-        return {
-            "status": "warning",
-            "message": "Plusieurs résultats correspondent à la recherche, vous pouvez saisir un identifiant plus précis si vous le souhaitez",
-            "data": results,
-        }
-
-
-# TODO : Faire la logique pour récupérer les infos du code attributaire pr que ça soit plus simple à récupérer dans un dataframe
-
+        q = f"""
+        SELECT EZABPQM, "Code Attributaire", Attributaire
+        FROM SEARCH_TABLE
+        WHERE LEFT(EZABPQM, ?) = ? ; 
+        """
+        result = con.execute(q, (input_length, input_user)).fetchdf()
+        # print(result.head())
+        # print(len(result))
+        
+        if len(result) == 0:
+            return {
+                "status": "error",
+                "message": "Aucun identifiant trouvé",
+            }
+        elif len(result) == 1:
+            results = result.to_dict(orient="records")
+            return {
+                "status": "success",
+                "data": results,
+            }
+        else:
+            results = result.to_dict(orient="records")
+            return {
+                "status": "warning",
+                "message": "Plusieurs résultats correspondent à la recherche, vous pouvez saisir un identifiant plus précis si vous le souhaitez",
+                "data": results,
+            }
+    finally :
+        con.close()
 
 def get_majnum_data() -> dict:
     con = duckdb.connect(DATABASE_PATH)
