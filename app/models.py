@@ -1,3 +1,4 @@
+# models.py 
 import os
 import duckdb
 from .config import config, DATABASE_PATH
